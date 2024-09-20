@@ -1,5 +1,6 @@
 <template>
-	<view class="homeLayout">
+	<view class="homeLayout pageBg">
+		<custom-nav-bar title="推荐"></custom-nav-bar>
 		<!-- 轮播区域 -->
 		<view class="banner">
 			<swiper circular autoplay indicator-dots indicator-color="rgba(255,255,255,0.5)"
@@ -19,14 +20,16 @@
 		<!-- 公告和轮播区域 -->
 		<view class="notice">
 			<view class="left">
-				<uni-icons type="sound-filled" size="20" color="#28b389"></uni-icons>
+				<uni-icons type="sound-filled" size="20"></uni-icons>
 				<text class="text">公告</text>
 			</view>
 			<view class="center">
 				<swiper circular autoplay vertical interval="1500" duration="300">
-					<swiper-item>文字内容1</swiper-item>
-					<swiper-item>文字内容2</swiper-item>
-					<swiper-item>文字内容3文字内容3文字内容3文字内容3文字内容3文字内容3文字内容3</swiper-item>
+					<swiper-item v-for="item in 4">
+						<navigator url="/pages/notice/detail">
+							文字内容3文字内容3文字内容3文字内容3文字内容3文字内容3文字内容3
+						</navigator>
+					</swiper-item>
 				</swiper>
 			</view>
 			<view class="right">
@@ -38,11 +41,19 @@
 		<view class="select">
 			<common-title>
 				<template #name>每日推荐</template>
-				<template #custom>时间</template>
+				<template #custom>
+					<view class="date">
+						<uni-icons type="calendar" size="18"></uni-icons>
+						<view class="text">
+							<uni-dateformat :date="Date.now()" format="dd日"></uni-dateformat>
+							<!-- <uni-dateformat :date="new Date()" format="dd日"></uni-dateformat> -->
+						</view>
+					</view>
+				</template>
 			</common-title>
 			<view class="content">
 				<scroll-view scroll-x>
-					<navigator to="" class="box" v-for="(item, index) in 8">
+					<navigator url="/pages/preview/preview" class="box" v-for="(item, index) in 8">
 						<image src="../../common/images/preview_small.webp" mode="aspectFill"></image>
 					</navigator>
 				</scroll-view>
@@ -50,11 +61,17 @@
 		</view>
 
 		<!-- 专题精选 -->
-		<view class="">
+		<view class="theme">
 			<common-title>
 				<template #name>专题精选</template>
-				<template #custom>More+</template>
+				<template #custom>
+					<navigator url="" class="more">More+</navigator>
+				</template>
 			</common-title>
+			<view class="content">
+				<theme-item v-for="item in 8"></theme-item>
+				<theme-item :isMore="true"></theme-item>
+			</view>
 		</view>
 	</view>
 </template>
@@ -105,8 +122,15 @@
 				justify-content: center;
 				width: 140rpx;
 
+				// 图标
+				:deep() {
+					.uni-icons {
+						color: $brand-theme-color !important;
+					}
+				}
+
 				.text {
-					color: #28b389;
+					color: $brand-theme-color;
 					font-weight: 600;
 					font-size: 28rpx;
 				}
@@ -142,6 +166,24 @@
 		.select {
 			padding-top: 50rpx;
 
+			// 组件 <common-title></common-title>
+			.date {
+				display: flex;
+				color: $brand-theme-color;
+				align-items: center;
+
+				// 图标
+				:deep() {
+					.uni-icons {
+						color: $brand-theme-color !important;
+					}
+				}
+
+				.text {
+					margin-left: 5rpx;
+				}
+			}
+
 			.content {
 				width: 720rpx;
 				margin-top: 30rpx;
@@ -173,5 +215,22 @@
 
 
 		// 专题精选
+		.theme {
+			padding: 50rpx 0;
+
+			// 组件 <common-title></common-title>
+			.more {
+				font-size: 32rpx;
+				color: #888;
+			}
+
+			.content {
+				display: grid;
+				gap: 15rpx;
+				grid-template-columns: repeat(3, 1fr);
+				margin-top: 30rpx;
+				padding: 0 30rpx;
+			}
+		}
 	}
 </style>

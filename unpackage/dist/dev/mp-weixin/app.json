@@ -1,0 +1,42 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/classfiy/classfiy",
+    "pages/user/user",
+    "pages/classlist/classlist",
+    "pages/preview/preview",
+    "pages/notice/notice",
+    "pages/notice/detail"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "咸虾米壁纸",
+    "navigationBarBackgroundColor": "#fff",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#9799a5",
+    "selectedColor": "#28b389",
+    "list": [
+      {
+        "text": "推荐",
+        "pagePath": "pages/index/index",
+        "iconPath": "static/tabBar/home.png",
+        "selectedIconPath": "static/tabBar/home-h.png"
+      },
+      {
+        "text": "分类",
+        "pagePath": "pages/classfiy/classfiy",
+        "iconPath": "static/tabBar/classify.png",
+        "selectedIconPath": "static/tabBar/classify-h.png"
+      },
+      {
+        "text": "我的",
+        "pagePath": "pages/user/user",
+        "iconPath": "static/tabBar/user.png",
+        "selectedIconPath": "static/tabBar/user-h.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

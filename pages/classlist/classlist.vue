@@ -1,0 +1,35 @@
+<template>
+	<view class="classList">
+		<view class="content">
+			<navigator url="/pages/preview/preview" class="item" v-for="item in 10">
+				<image src="../../common/images/preview2.jpg" mode="aspectFill"></image>
+			</navigator>
+		</view>
+	</view>
+</template>
+
+<script setup>
+
+</script>
+
+<style lang="scss" scoped>
+	.classList {
+
+		.content {
+			display: grid;
+			gap: 5rpx;
+			grid-template-columns: repeat(3, 1fr);
+			padding: 5rpx;
+
+			.item {
+				height: 440rpx;
+
+				image {
+					width: 100%;
+					height: 100%;
+					display: block;
+				}
+			}
+		}
+	}
+</style>
