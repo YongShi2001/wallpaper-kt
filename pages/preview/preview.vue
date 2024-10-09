@@ -1,8 +1,9 @@
 <template>
-	<view class="preview">
-		<swiper circular>
-			<swiper-item v-for="item in 5">
-				<image @click="maskChange" src="../../common/images/preview1.jpg" mode="aspectFill"></image>
+	<view class="preview" v-if="currentInfo">
+		<swiper circular :current="currentIndex" @change="SwiperChange">
+			<swiper-item v-for="(item,index) in classList" :key="item._id">
+				<image v-if="readImgs.includes(index)" @click=" maskChange" :src="item.picurl" mode="aspectFill">
+				</image>
 			</swiper-item>
 		</swiper>
 
@@ -11,25 +12,25 @@
 			<view class="goBack" :style="{top:getStatusBarHeight() + 'px'}" @click="goBack">
 				<uni-icons type="back" size="20" color="#ccc"></uni-icons>
 			</view>
-			<view class="count">6 / 9</view>
+			<view class="count">{{currentIndex+1}} / {{classList.length}}</view>
 			<view class="time">
 				<uni-dateformat :date="new Date()" format="hh:mm"></uni-dateformat>
 			</view>
 			<view class="date">
 				<uni-dateformat :date="new Date()" format="MM月dd日"></uni-dateformat>
 			</view>
-			<view class="footer">
+			<view class="footer" v-if="currentInfo">
 				<view class="box" @click="clickInfo">
 					<uni-icons type="info" size="23"></uni-icons>
 					<view class="text">信息</view>
 				</view>
 
-				<view class="box" @click="clickScore">
+				<view class="box" @click="currentInfo">
 					<uni-icons type="star" size="23"></uni-icons>
-					<view class="text">5分</view>
+					<view class="text">{{currentInfo.score}}分</view>
 				</view>
 
-				<view class="box">
+				<view class="box" @click="clickDownload">
 					<uni-icons type="download" size="23"></uni-icons>
 					<view class="text">下载</view>
 				</view>
@@ -50,39 +51,38 @@
 					<view class="content">
 						<view class="row">
 							<view class="label">壁纸ID：</view>
-							<text selectable class="value">12312312adfa</text>
+							<text selectable class="value">{{currentInfo._id}}</text>
 						</view>
 
-						<view class="row">
+						<!-- <view class="row">
 							<view class="label">分类：</view>
 							<text class="value class">明星美女</text>
-						</view>
+						</view> -->
 
 						<view class="row">
 							<view class="label">发布者：</view>
-							<text class="value">咸虾米</text>
+							<text class="value">{{currentInfo.nickname}}</text>
 						</view>
 
 						<view class="row">
 							<text class="label">评分：</text>
 							<view class='value roteBox'>
-								<uni-rate readonly touchable value="3.5" size="16" />
-								<text class="score">5分</text>
+								<uni-rate readonly touchable :value="currentInfo.score" size="16" />
+								<text class="score">{{currentInfo.score}}分</text>
 							</view>
 						</view>
 
 						<view class="row">
 							<text class="label">摘要：</text>
 							<view class='value'>
-								摘要文字内容填充部分，摘要文字内容填充部分，摘要文字内容填充部分，
-								摘要文字内容填充部分。
+								{{currentInfo.description}}
 							</view>
 						</view>
 
 						<view class="row">
 							<text class="label">标签：</text>
 							<view class='value tabs'>
-								<view class="tab" v-for="item in 3">标签名</view>
+								<view class="tab" v-for="item in currentInfo.tabs" :key="tab">{{item}}</view>
 							</view>
 						</view>
 
@@ -101,18 +101,18 @@
 			<view class="scorePopup">
 				<view class="popHeader">
 					<view></view>
-					<view class="title">壁纸评分</view>
+					<view class="title">{{isScore ? '已经评分了~' : '壁纸评分'}}</view>
 					<view class="close" @click="clickScoreClose">
 						<uni-icons type="closeempty" size="18" color="#999"></uni-icons>
 					</view>
 				</view>
 				<view class="content">
-					<uni-rate allowHalf v-model="userScore" />
+					<uni-rate v-model="userScore" allowHalf :disabled="isScore" disabled-color="#FFCA3F" />
 					<text class="text">{{userScore}}分</text>
 				</view>
-
 				<view class="footer">
-					<button @click="submitScore" :disabled="!userScore" type="default" size="mini" plain>确认评分</button>
+					<button @click="submitScore" :disabled="!userScore || isScore" type="default" size="mini"
+						plain>确认评分</button>
 				</view>
 			</view>
 		</uni-popup>
@@ -124,14 +124,65 @@
 		ref
 	} from 'vue';
 	import {
+		onLoad,
+		onShareAppMessage,
+		onShareTimeline
+	} from '@dcloudio/uni-app'
+	import {
 		getStatusBarHeight
 	} from '@/utils/system.js'
-
+	import {
+		apiGetSetupScore,
+		apiGetDownloadWall,
+		apiGetDetailWall
+	} from '@/api/apis.js'
 
 	const maskState = ref(true)
 	const infoPopup = ref(null)
 	const scorePopup = ref(null)
 	const userScore = ref(0)
+	const classList = ref([])
+	const currentId = ref(null)
+	const currentIndex = ref(0)
+	const currentInfo = ref(null)
+	const isScore = ref(false)
+	const readImgs = ref([])
+
+	const storgClassList = uni.getStorageSync('storgClassList') || []
+	classList.value = storgClassList.map(item => {
+		return {
+			...item,
+			picurl: item.smallPicurl.replace('_small.webp', '.jpg')
+		}
+	})
+	// console.log(storgClassList);
+
+	onLoad(async (e) => {
+		// console.log(e);
+		currentId.value = e.id
+		if (e.type == 'share') {
+			let res = await apiGetDetailWall({
+				id: currentId.value
+			})
+			// console.log(res);
+			classList.value = res.data.map(item => {
+				return {
+					...item,
+					picurl: item.smallPicurl.replace('_small.webp', '.jpg')
+				}
+			})
+		}
+		currentIndex.value = classList.value.findIndex(item => item._id == currentId.value)
+		currentInfo.value = classList.value[currentIndex.value]
+		readImgsFun()
+	})
+
+	const SwiperChange = (e) => {
+		// console.log(e);
+		currentIndex.value = e.detail.current
+		currentInfo.value = classList.value[currentIndex.value]
+		readImgsFun()
+	}
 
 	// 点击图片显示/隐藏遮罩层
 	const maskChange = () => {
@@ -150,22 +201,171 @@
 
 	// 打开评分弹窗
 	const clickScore = () => {
+		if (currentInfo.value.userScore) {
+			isScore.value = true
+			userScore.value = currentInfo.value.userScore
+		}
 		scorePopup.value.open()
 	}
 
 	// 关闭评分弹窗
 	const clickScoreClose = () => {
 		scorePopup.value.close()
+		userScore.value = 0
+		isScore.value = false
 	}
 
 	//确认评分按钮
-	const submitScore = () => {
-		console.log("评分了");
+	const submitScore = async () => {
+		uni.showLoading({
+			title: '加载中...'
+		})
+		// console.log(userScore.value);
+		let {
+			classid,
+			_id: wallId,
+		} = currentInfo.value
+		// 评分接口
+		let res = await apiGetSetupScore({
+			classid,
+			wallId,
+			userScore: userScore.value
+		})
+		uni.hideLoading()
+		if (res.errCode === 0) {
+			uni.showToast({
+				title: '评分成功',
+				icon: 'none'
+			})
+			classList.value[currentIndex.value].userScore = userScore.value
+			uni.setStorageSync('storgClassList', classList.value)
+			// 关闭评分弹窗
+			clickScoreClose()
+		}
+		console.log(res);
 	}
 
 	// 返回上一个页面
 	const goBack = () => {
 		uni.navigateBack()
+	}
+
+	// 下载图片
+	const clickDownload = async () => {
+		// #ifdef H5
+		uni.showModal({
+			content: '请长按保持壁纸',
+			showCancel: false
+		})
+		// #endif
+
+		// #ifndef H5
+		try {
+
+			uni.showLoading({
+				title: '下载中...',
+				mask: true
+			})
+
+			let {
+				classid,
+				_id: wallId,
+			} = currentInfo.value
+			let res = await apiGetDownloadWall({
+				classid,
+				wallId
+			})
+			if (res.errCode != 0) throw res
+
+			uni.getImageInfo({
+				src: currentInfo.value.picurl,
+				success: (res) => {
+					uni.saveImageToPhotosAlbum({
+						filePath: res.path,
+						success: (res) => {
+							uni.showToast({
+								title: '保存成功，请到相册查看',
+								icon: 'none'
+							})
+						},
+						fail: err => {
+							if (err.errMsg == 'saveImageToPhotosAlbum:fail auth deny') {
+								uni.showToast({
+									title: '保存失败，请重新点击下载',
+									icon: 'none'
+								})
+
+								return
+							}
+							uni.showModal({
+								title: '提示',
+								content: '需要授权保存相册',
+								success: res => {
+									if (res.confirm) {
+										// console.log('确定授权了');
+										uni.openSetting({
+											success: (setting) => {
+												console.log(
+													setting);
+												if (setting
+													.authSetting[
+														'scope.writePhotosAlbum'
+													]) {
+													uni.showToast({
+														title: '获取授权成功',
+														icon: 'none'
+													})
+												} else {
+													uni.showToast({
+														title: '获取授权失败',
+														icon: 'none'
+													})
+												}
+											}
+										})
+									}
+								}
+							})
+						},
+						complete: (res) => {
+							uni.hideLoading()
+						}
+					})
+				}
+			})
+		} catch (err) {
+			console.log(err);
+			uni.hideLoading()
+		}
+		// #endif
+	}
+
+	// 分享给朋友
+	onShareAppMessage((e) => {
+		// console.log(e);
+		return {
+			title: '至秦禾呈',
+			path: '/pages/preview/preview?id=' + currentId.value + '&type=share'
+		}
+	})
+
+	// 分享给朋友圈
+	onShareTimeline((e) => {
+		// console.log(e);
+		return {
+			title: '至秦禾呈',
+			query: 'id=' + currentId.value + '&type=share'
+		}
+	})
+
+	// 封装的函数
+	function readImgsFun() {
+		readImgs.value.push(
+			currentIndex.value <= 0 ? classList.value.length - 1 : currentIndex.value,
+			currentIndex.value,
+			currentIndex.value >= classList.value.length - 1
+		)
+		readImgs.value = [...new Set(readImgs.value)]
 	}
 </script>
 

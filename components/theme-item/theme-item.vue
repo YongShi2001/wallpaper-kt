@@ -1,13 +1,13 @@
 <template>
 	<view class="theme-item">
-		<navigator url="/pages/classlist/classlist" class="box" v-if="!isMore">
-			<image class="img" src="../../common/images/classify1.jpg" mode="aspectFill"></image>
-			<view class="mask">明星美女</view>
-			<view class="tab">3天前更新</view>
+		<navigator :url="'/pages/classlist/classlist?id='+item._id+'&name='+item.name" class="box" v-if="!isMore">
+			<image class="img" :src="item.picurl" mode="aspectFill"></image>
+			<view class="mask">{{item.name}}</view>
+			<view class="tab">{{compareTimestamp(item.updateTime)}}</view>
 		</navigator>
 
 		<navigator url="/pages/classfiy/classfiy" open-type="reLaunch" class="box more" v-if="isMore">
-			<image class="img" src="../../common/images/more.jpg	" mode="aspectFill"></image>
+			<image class="img" src="../../common/images/more.jpg" mode="aspectFill"></image>
 			<view class="mask">
 				<uni-icons type="more-filled" size="34" color="#fff"></uni-icons>
 				<view class="text">更多</view>
@@ -17,10 +17,24 @@
 </template>
 
 <script setup>
+	import {
+		compareTimestamp
+	} from '@/utils/common.js'
+
 	defineProps({
 		isMore: {
 			type: Boolean,
 			default: false
+		},
+		item: {
+			type: Object,
+			default () {
+				return {
+					name: "默认名称",
+					picurl: "../../common/images/more.jpg",
+					updateTime: Date.now() - 1000 * 60 * 60 * 5
+				}
+			}
 		}
 	})
 </script>

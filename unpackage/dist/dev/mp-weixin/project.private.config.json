@@ -3,5 +3,6 @@
   "projectname": "wallpaper-kt",
   "setting": {
     "compileHotReLoad": true
-  }
+  },
+  "libVersion": "development"
 }

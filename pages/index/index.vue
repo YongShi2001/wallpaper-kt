@@ -5,14 +5,8 @@
 		<view class="banner">
 			<swiper circular autoplay indicator-dots indicator-color="rgba(255,255,255,0.5)"
 				indicator-active-color="#fff">
-				<swiper-item>
-					<image src="../../common/images/banner1.jpg" mode="aspectFill"></image>
-				</swiper-item>
-				<swiper-item>
-					<image src="../../common/images/banner2.jpg" mode="aspectFill"></image>
-				</swiper-item>
-				<swiper-item>
-					<image src="../../common/images/banner3.jpg" mode="aspectFill"></image>
+				<swiper-item v-for="item in bannerList" :key="item._id">
+					<image :src="item.picurl" mode="aspectFill"></image>
 				</swiper-item>
 			</swiper>
 		</view>
@@ -25,9 +19,9 @@
 			</view>
 			<view class="center">
 				<swiper circular autoplay vertical interval="1500" duration="300">
-					<swiper-item v-for="item in 4">
+					<swiper-item v-for="item in noticeList" :key="item._id">
 						<navigator url="/pages/notice/detail">
-							文字内容3文字内容3文字内容3文字内容3文字内容3文字内容3文字内容3
+							{{item.title}}
 						</navigator>
 					</swiper-item>
 				</swiper>
@@ -53,8 +47,8 @@
 			</common-title>
 			<view class="content">
 				<scroll-view scroll-x>
-					<navigator url="/pages/preview/preview" class="box" v-for="(item, index) in 8">
-						<image src="../../common/images/preview_small.webp" mode="aspectFill"></image>
+					<navigator url="/pages/preview/preview" class="box" v-for="item in randomList" :key="item._id">
+						<image :src="item.smallPicurl" mode="aspectFill"></image>
 					</navigator>
 				</scroll-view>
 			</view>
@@ -69,7 +63,7 @@
 				</template>
 			</common-title>
 			<view class="content">
-				<theme-item v-for="item in 8"></theme-item>
+				<theme-item v-for="item in classfiyList" :key="item._id" :item="item"></theme-item>
 				<theme-item :isMore="true"></theme-item>
 			</view>
 		</view>
@@ -77,7 +71,79 @@
 </template>
 
 <script setup>
+	import {
+		ref
+	} from 'vue';
+	import {
+		onShareAppMessage,
+		onShareTimeline
+	} from '@dcloudio/uni-app'
+	import {
+		apiGetBanner,
+		apiGetNotice,
+		apiGetDayRandom,
+		apiGetClassify
+	} from '@/api/apis.js'
 
+	const bannerList = ref([])
+	const noticeList = ref([])
+	const randomList = ref([])
+	const classfiyList = ref([])
+
+	// 轮播图接口
+	const getBanner = async () => {
+		let res = await apiGetBanner()
+		// console.log(res);
+		bannerList.value = res.data
+	}
+
+	// 公告接口
+	const getNotice = async () => {
+		let res = await apiGetNotice({
+			select: true
+		})
+		// console.log(res);
+		noticeList.value = res.data
+	}
+
+	// 每日推荐接口
+	const getDayRandom = async () => {
+		let res = await apiGetDayRandom()
+		// console.log(res);
+		randomList.value = res.data
+	}
+
+	// 专题精选
+	const getClassify = async () => {
+		let res = await apiGetClassify({
+			select: true
+		})
+		// console.log(res);
+		classfiyList.value = res.data
+	}
+
+	// 分享给朋友
+	onShareAppMessage((e) => {
+		// console.log(e);
+		return {
+			title: '至秦禾呈，好看的手机壁纸',
+			path: '/pages/index/index'
+		}
+	})
+
+	// 分享给朋友圈
+	onShareTimeline((e) => {
+		// console.log(e);
+		return {
+			title: '至秦禾呈，好看的手机壁纸',
+			imageUrl: 'https://www.qingnian8.com/images/hot1.jpg'
+		}
+	})
+
+	getBanner()
+	getNotice()
+	getDayRandom()
+	getClassify()
 </script>
 
 <style lang="scss" scoped>
