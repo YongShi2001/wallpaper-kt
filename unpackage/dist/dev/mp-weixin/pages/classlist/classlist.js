@@ -20,7 +20,11 @@ const _sfc_main = {
       pageSize: 12
     };
     const getClassList = async () => {
-      let res = await api_apis.apiGetClassList(queryParams);
+      let res;
+      if (queryParams.classid)
+        res = await api_apis.apiGetClassList(queryParams);
+      if (queryParams.type)
+        res = await api_apis.apiGetUserWallList(queryParams);
       classList.value = [...classList.value, ...res.data];
       if (queryParams.pageSize > res.data.length)
         noData.value = true;
@@ -29,14 +33,21 @@ const _sfc_main = {
     common_vendor.onLoad((e) => {
       let {
         id = null,
-        name = null
+        name = null,
+        type = null
       } = e;
+      if (type)
+        queryParams.type = type;
+      if (id)
+        queryParams.classid = id;
       pageNamer = name;
-      queryParams.classid = id;
       common_vendor.index.setNavigationBarTitle({
         title: pageNamer
       });
       getClassList();
+    });
+    common_vendor.onUnload((e) => {
+      common_vendor.index.removeStorageSync("storgClassList");
     });
     common_vendor.onReachBottom(() => {
       if (noData.value)

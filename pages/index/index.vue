@@ -20,7 +20,7 @@
 			<view class="center">
 				<swiper circular autoplay vertical interval="1500" duration="300">
 					<swiper-item v-for="item in noticeList" :key="item._id">
-						<navigator url="/pages/notice/detail">
+						<navigator :url="'/pages/notice/detail?id=' + item._id">
 							{{item.title}}
 						</navigator>
 					</swiper-item>
@@ -47,9 +47,9 @@
 			</common-title>
 			<view class="content">
 				<scroll-view scroll-x>
-					<navigator url="/pages/preview/preview" class="box" v-for="item in randomList" :key="item._id">
+					<view class="box" v-for="item in randomList" :key="item._id" @click="goPreview(item._id)">
 						<image :src="item.smallPicurl" mode="aspectFill"></image>
-					</navigator>
+					</view>
 				</scroll-view>
 			</view>
 		</view>
@@ -111,6 +111,14 @@
 		let res = await apiGetDayRandom()
 		// console.log(res);
 		randomList.value = res.data
+	}
+
+	// 每日推荐
+	const goPreview = (id) => {
+		uni.setStorageSync('storgClassList', randomList.value)
+		uni.navigateTo({
+			url: "/pages/preview/preview?id=" + id
+		})
 	}
 
 	// 专题精选

@@ -38,6 +38,12 @@ const _sfc_main = {
       let res = await api_apis.apiGetDayRandom();
       randomList.value = res.data;
     };
+    const goPreview = (id) => {
+      common_vendor.index.setStorageSync("storgClassList", randomList.value);
+      common_vendor.index.navigateTo({
+        url: "/pages/preview/preview?id=" + id
+      });
+    };
     const getClassify = async () => {
       let res = await api_apis.apiGetClassify({
         select: true
@@ -78,7 +84,8 @@ const _sfc_main = {
         d: common_vendor.f(noticeList.value, (item, k0, i0) => {
           return {
             a: common_vendor.t(item.title),
-            b: item._id
+            b: "/pages/notice/detail?id=" + item._id,
+            c: item._id
           };
         }),
         e: common_vendor.p({
@@ -97,7 +104,8 @@ const _sfc_main = {
         h: common_vendor.f(randomList.value, (item, k0, i0) => {
           return {
             a: item.smallPicurl,
-            b: item._id
+            b: item._id,
+            c: common_vendor.o(($event) => goPreview(item._id), item._id)
           };
         }),
         i: common_vendor.f(classfiyList.value, (item, k0, i0) => {

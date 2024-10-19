@@ -63,3 +63,43 @@ export function apiGetDetailWall(data = {}) {
 		data
 	})
 }
+
+// 用户个人信息
+export function apiGetUserInfo(data = {}) {
+	return request({
+		url: '/userInfo',
+		data
+	})
+}
+
+// 我的评分/下载列表
+export function apiGetUserWallList(data = {}) {
+	return request({
+		url: '/userWallList',
+		data
+	})
+}
+
+// 壁纸资讯公告详情
+export function apiGetWallNewsDetail(data = {}) {
+	return request({
+		url: '/wallNewsDetail',
+		data
+	})
+}
+
+// 壁纸资讯公告列表
+export function apiGetWallNewsList(data = {}) {
+	return request({
+		url: '/wallNewsList',
+		data
+	})
+}
+
+// 搜索壁纸
+export function apiGetSearchWall(data = {}) {
+	return request({
+		url: '/searchWall',
+		data
+	})
+}

@@ -122,9 +122,13 @@ const _sfc_main = {
   },
   computed: {
     getStyles() {
-      let res = { backgroundColor: this.bg };
+      let res = {
+        backgroundColor: this.bg
+      };
       if (this.borderRadius || "0") {
-        res = Object.assign(res, { borderRadius: this.borderRadius });
+        res = Object.assign(res, {
+          borderRadius: this.borderRadius
+        });
       }
       return res;
     },
@@ -280,7 +284,7 @@ const _sfc_main = {
         left: 0,
         right: 0,
         bottom: 0,
-        paddingBottom: this.safeAreaInsets + "px",
+        // paddingBottom: this.safeAreaInsets + 'px',
         backgroundColor: this.bg,
         borderRadius: this.borderRadius || "0"
       };

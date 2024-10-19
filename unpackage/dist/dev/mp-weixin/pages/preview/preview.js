@@ -98,7 +98,15 @@ const _sfc_main = {
       console.log(res);
     };
     const goBack = () => {
-      common_vendor.index.navigateBack();
+      common_vendor.index.navigateBack({
+        success: () => {
+        },
+        fail: (err) => {
+          common_vendor.index.reLaunch({
+            url: "/pages/index/index"
+          });
+        }
+      });
     };
     const clickDownload = async () => {
       try {

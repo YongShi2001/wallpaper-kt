@@ -91,6 +91,8 @@
 							您可以拷贝壁纸ID举报至平台，邮箱513894357@qq.com，管理将删除侵权壁纸，
 							维护您的权益。
 						</view>
+
+						<view class="safe-area-inset-bottom"></view>
 					</view>
 				</scroll-view>
 			</view>
@@ -247,7 +249,16 @@
 
 	// 返回上一个页面
 	const goBack = () => {
-		uni.navigateBack()
+		uni.navigateBack({
+			success: () => {
+
+			},
+			fail: (err) => {
+				uni.reLaunch({
+					url: '/pages/index/index'
+				})
+			}
+		})
 	}
 
 	// 下载图片

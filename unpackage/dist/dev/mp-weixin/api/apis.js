@@ -46,6 +46,30 @@ function apiGetDetailWall(data = {}) {
     data
   });
 }
+function apiGetUserInfo(data = {}) {
+  return utils_request.request({
+    url: "/userInfo",
+    data
+  });
+}
+function apiGetUserWallList(data = {}) {
+  return utils_request.request({
+    url: "/userWallList",
+    data
+  });
+}
+function apiGetWallNewsDetail(data = {}) {
+  return utils_request.request({
+    url: "/wallNewsDetail",
+    data
+  });
+}
+function apiGetSearchWall(data = {}) {
+  return utils_request.request({
+    url: "/searchWall",
+    data
+  });
+}
 exports.apiGetBanner = apiGetBanner;
 exports.apiGetClassList = apiGetClassList;
 exports.apiGetClassify = apiGetClassify;
@@ -53,4 +77,8 @@ exports.apiGetDayRandom = apiGetDayRandom;
 exports.apiGetDetailWall = apiGetDetailWall;
 exports.apiGetDownloadWall = apiGetDownloadWall;
 exports.apiGetNotice = apiGetNotice;
+exports.apiGetSearchWall = apiGetSearchWall;
 exports.apiGetSetupScore = apiGetSetupScore;
+exports.apiGetUserInfo = apiGetUserInfo;
+exports.apiGetUserWallList = apiGetUserWallList;
+exports.apiGetWallNewsDetail = apiGetWallNewsDetail;

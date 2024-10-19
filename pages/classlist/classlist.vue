@@ -25,13 +25,18 @@
 	} from 'vue';
 	import {
 		onLoad,
+		onUnload,
 		onReachBottom,
 		onShareAppMessage,
 		onShareTimeline
 	} from '@dcloudio/uni-app'
 	import {
-		apiGetClassList
+		apiGetClassList,
+		apiGetUserWallList
 	} from '@/api/apis.js'
+	import {
+		gotoHome
+	} from '@/utils/common.js'
 
 	const classList = ref([])
 	const noData = ref(false)
@@ -44,7 +49,10 @@
 	}
 
 	const getClassList = async () => {
-		let res = await apiGetClassList(queryParams)
+		let res
+
+		if (queryParams.classid) res = await apiGetClassList(queryParams)
+		if (queryParams.type) res = await apiGetUserWallList(queryParams)
 		// console.log(res);
 		// console.log(res.data);
 		classList.value = [...classList.value, ...res.data]
@@ -56,17 +64,23 @@
 	// 接收参数
 	onLoad((e) => {
 		let {
-			id = null, name = null
+			id = null, name = null, type = null
 		} = e
+		if (type) queryParams.type = type
+		if (id) queryParams.classid = id
+		// if (!id) gotoHome()
 		pageNamer = name
-		// console.log(id, name);
-		queryParams.classid = id
 		// 修改导航标题
 		uni.setNavigationBarTitle({
 			title: pageNamer
 		})
 
 		getClassList()
+	})
+
+	// 离开页面
+	onUnload((e) => {
+		uni.removeStorageSync('storgClassList')
 	})
 
 	// 触底加载

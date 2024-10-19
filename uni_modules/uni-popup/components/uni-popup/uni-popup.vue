@@ -87,7 +87,7 @@
 				type: String,
 				default: 'rgba(0, 0, 0, 0.4)'
 			},
-			borderRadius:{
+			borderRadius: {
 				type: String,
 			}
 		},
@@ -174,9 +174,13 @@
 		},
 		computed: {
 			getStyles() {
-				let res = { backgroundColor: this.bg };
+				let res = {
+					backgroundColor: this.bg
+				};
 				if (this.borderRadius || "0") {
-					res = Object.assign(res, { borderRadius: this.borderRadius })
+					res = Object.assign(res, {
+						borderRadius: this.borderRadius
+					})
 				}
 				return res;
 			},
@@ -235,11 +239,11 @@
 		},
 		// #endif
 		activated() {
-   	  this.setH5Visible(!this.showPopup);
-    },
-    deactivated() {
-      this.setH5Visible(true);
-    },
+			this.setH5Visible(!this.showPopup);
+		},
+		deactivated() {
+			this.setH5Visible(true);
+		},
 		created() {
 			// this.mkclick =  this.isMaskClick || this.maskClick
 			if (this.isMaskClick === null && this.maskClick === null) {
@@ -262,7 +266,7 @@
 			setH5Visible(visible = true) {
 				// #ifdef H5
 				// fix by mehaotian 处理 h5 滚动穿透的问题
-				document.getElementsByTagName('body')[0].style.overflow =  visible ? "visible" : "hidden";
+				document.getElementsByTagName('body')[0].style.overflow = visible ? "visible" : "hidden";
 				// #endif
 			},
 			/**
@@ -343,7 +347,7 @@
 					left: 0,
 					right: 0,
 					backgroundColor: this.bg,
-					borderRadius:this.borderRadius || "0"
+					borderRadius: this.borderRadius || "0"
 				}
 				// TODO 兼容 type 属性 ，后续会废弃
 				if (type) return
@@ -366,9 +370,9 @@
 					left: 0,
 					right: 0,
 					bottom: 0,
-					paddingBottom: this.safeAreaInsets + 'px',
+					// paddingBottom: this.safeAreaInsets + 'px',
 					backgroundColor: this.bg,
-					borderRadius:this.borderRadius || "0",
+					borderRadius: this.borderRadius || "0",
 				}
 				// TODO 兼容 type 属性 ，后续会废弃
 				if (type) return
@@ -382,10 +386,10 @@
 				this.popupstyle = 'center'
 				//微信小程序下，组合动画会出现文字向上闪动问题，再此做特殊处理
 				// #ifdef MP-WEIXIN
-					this.ani = ['fade']
+				this.ani = ['fade']
 				// #endif
 				// #ifndef MP-WEIXIN
-					this.ani = ['zoom-out', 'fade']
+				this.ani = ['zoom-out', 'fade']
 				// #endif
 				this.transClass = {
 					position: 'fixed',
@@ -399,7 +403,7 @@
 					top: 0,
 					justifyContent: 'center',
 					alignItems: 'center',
-					borderRadius:this.borderRadius || "0"
+					borderRadius: this.borderRadius || "0"
 				}
 				// TODO 兼容 type 属性 ，后续会废弃
 				if (type) return
@@ -415,7 +419,7 @@
 					bottom: 0,
 					top: 0,
 					backgroundColor: this.bg,
-					borderRadius:this.borderRadius || "0",
+					borderRadius: this.borderRadius || "0",
 					/* #ifndef APP-NVUE */
 					display: 'flex',
 					flexDirection: 'column'
@@ -435,7 +439,7 @@
 					right: 0,
 					top: 0,
 					backgroundColor: this.bg,
-					borderRadius:this.borderRadius || "0",
+					borderRadius: this.borderRadius || "0",
 					/* #ifndef APP-NVUE */
 					display: 'flex',
 					flexDirection: 'column'
